@@ -20,7 +20,7 @@ class EventServiceProvider extends ServiceProvider
 	];
 
 	/**
-	 * Register any events for your application.
+	 * Registers any events for your application.
 	 *
 	 * @return void
 	 */

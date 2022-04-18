@@ -1,4 +1,5 @@
-<?php // @codingStandardsIgnoreLine PSR1.Files.SideEffects.FoundWithSymbols
+<?php // phpcs:ignore PSR1.Files.SideEffects.FoundWithSymbols
+// phpcs:disable Squiz.Commenting
 
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;

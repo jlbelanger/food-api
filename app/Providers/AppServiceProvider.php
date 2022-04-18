@@ -11,7 +11,7 @@ use Log;
 class AppServiceProvider extends ServiceProvider
 {
 	/**
-	 * Register any application services.
+	 * Registers any application services.
 	 *
 	 * @return void
 	 */
@@ -20,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
 	}
 
 	/**
-	 * Bootstrap any application services.
+	 * Bootstraps any application services.
 	 *
 	 * @param  Kernel $kernel
 	 * @return void
@@ -29,11 +29,7 @@ class AppServiceProvider extends ServiceProvider
 	{
 		if (env('LOG_DATABASE_QUERIES') === '1') {
 			DB::listen(function ($query) {
-				Log::info(
-					$query->sql,
-					$query->bindings,
-					$query->time
-				);
+				Log::info($query->sql, $query->bindings, $query->time);
 			});
 		}
 
