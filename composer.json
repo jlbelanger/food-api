@@ -1,9 +1,16 @@
 {
-	"name": "laravel/laravel",
+	"name": "jlbelanger/food-api",
+	"description": "Track how many calories you eat each day.",
+	"version": "1.0.0",
 	"type": "project",
-	"description": "The Laravel Framework.",
-	"keywords": ["framework", "laravel"],
-	"license": "MIT",
+	"license": "GPL-3.0-only",
+	"authors": [
+		{
+			"name": "Jenny Belanger",
+			"email": "mail@jennybelanger.com",
+			"homepage": "https://www.jennybelanger.com/"
+		}
+	],
 	"require": {
 		"php": "^7.3|^8.0",
 		"fruitcake/laravel-cors": "^2.0",
@@ -33,6 +40,19 @@
 			"Tests\\": "tests/"
 		}
 	},
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "git@github.com:jlbelanger/tapioca.git"
+		}
+	],
+	"config": {
+		"optimize-autoloader": true,
+		"preferred-install": "dist",
+		"sort-packages": true
+	},
 	"scripts": {
 		"post-autoload-dump": [
 			"Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
@@ -52,12 +72,5 @@
 		"laravel": {
 			"dont-discover": []
 		}
-	},
-	"config": {
-		"optimize-autoloader": true,
-		"preferred-install": "dist",
-		"sort-packages": true
-	},
-	"minimum-stability": "dev",
-	"prefer-stable": true
+	}
 }
