@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<ruleset name="Jlbelanger-Laravel">
+	<file>.</file>
+
+	<arg name="colors" />
+	<arg name="extensions" value="php" />
+	<arg name="ignore" value="bootstrap/*,node_modules/*,public/uploads/*,storage/*,vendor/*" />
+	<arg value="p" />
+	<arg value="s" />
+
+	<rule ref="Generic.WhiteSpace.DisallowSpaceIndent.SpacesUsed" />
+</ruleset>
