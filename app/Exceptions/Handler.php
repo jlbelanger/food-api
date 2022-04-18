@@ -14,7 +14,9 @@ class Handler extends ExceptionHandler
 	 *
 	 * @var array<int, class-string<Throwable>>
 	 */
-	protected $dontReport = [];
+	protected $dontReport = [
+		JsonApiException::class,
+	];
 
 	/**
 	 * A list of the inputs that are never flashed for validation exceptions.
@@ -34,7 +36,16 @@ class Handler extends ExceptionHandler
 	 */
 	public function register()
 	{
-		$this->reportable(function (Throwable $e) {
+		$this->renderable(function (MethodNotAllowedHttpException $e) {
+			return response()->json(['errors' => [['title' => 'URL does not exist.', 'status' => '404', 'detail' => 'Method not allowed.']]], 404);
+		});
+
+		$this->renderable(function (JsonApiException $e) {
+			return response()->json(['errors' => $e->getErrors()], $e->getCode());
+		});
+
+		$this->renderable(function (HttpException $e) {
+			return response()->json(['errors' => [['title' => $e->getMessage(), 'status' => $e->getStatusCode()]]], $e->getStatusCode());
 		});
 	}
 }
