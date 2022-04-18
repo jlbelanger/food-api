@@ -1,4 +1,4 @@
-<?php
+<?php // @codingStandardsIgnoreLine PSR1.Files.SideEffects.FoundWithSymbols
 
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
