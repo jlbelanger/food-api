@@ -20,7 +20,13 @@ Route::group(['middleware' => ['api', 'auth:sanctum']], function () {
 	Route::put('/users/{id}/change-password', [\App\Http\Controllers\UserController::class, 'changePassword']);
 
 	Route::apiResources([
+		'entries' => \App\Http\Controllers\EntryController::class,
+		'extras' => \App\Http\Controllers\ExtraController::class,
+		'food' => \App\Http\Controllers\FoodController::class,
+		'meals' => \App\Http\Controllers\MealController::class,
+		'trackables' => \App\Http\Controllers\TrackableController::class,
 		'users' => \App\Http\Controllers\UserController::class,
+		'weights' => \App\Http\Controllers\WeightController::class,
 	]);
 });
 

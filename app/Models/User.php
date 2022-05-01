@@ -29,6 +29,8 @@ class User extends Authenticatable
 		'height',
 		'activity_level',
 		'measurement_units',
+		'favourites_only',
+		'is_admin',
 	];
 
 	/**
@@ -39,6 +41,19 @@ class User extends Authenticatable
 	protected $hidden = [
 		'password',
 		'remember_token',
+	];
+
+	/**
+	 * The attributes that should be cast to native types.
+	 *
+	 * @var array<string, string>
+	 */
+	protected $casts = [
+		'age' => 'integer',
+		'height' => 'integer',
+		'activity_level' => 'integer',
+		'favourites_only' => 'boolean',
+		'is_admin' => 'boolean',
 	];
 
 	/**
@@ -53,6 +68,13 @@ class User extends Authenticatable
 			'attributes.username' => [$required, 'alpha_num', 'max:255'],
 			'attributes.email' => [new CannotChange()],
 			'attributes.password' => [new CannotChange()],
+			'attributes.sex' => [Rule::in(['f', 'm'])],
+			'attributes.age' => ['integer'],
+			'attributes.height' => ['integer'],
+			'attributes.activity_level' => ['integer'],
+			'attributes.measurement_units' => [Rule::in(['i', 'm'])],
+			'attributes.favourites_only' => ['boolean'],
+			'attributes.is_admin' => [new CannotChange()],
 		];
 
 		$unique = Rule::unique($this->getTable(), 'username');
@@ -60,6 +82,12 @@ class User extends Authenticatable
 			$unique->ignore($this->id);
 		}
 		$rules['attributes.username'][] = $unique;
+
+		$unique = Rule::unique($this->getTable(), 'email');
+		if ($this->id) {
+			$unique->ignore($this->id);
+		}
+		$rules['attributes.email'][] = $unique;
 
 		return $rules;
 	}
