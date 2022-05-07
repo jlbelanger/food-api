@@ -50,9 +50,12 @@ class AuthController extends Controller
 		$token = $user->createToken('api');
 
 		return response()->json([
-			'id' => $user->id,
 			'token' => $token->plainTextToken,
 			'remember' => $remember,
+			'user' => [
+				'id' => $user->id,
+				'is_admin' => $user->is_admin,
+			],
 		]);
 	}
 
@@ -100,9 +103,12 @@ class AuthController extends Controller
 		DB::commit();
 
 		return response()->json([
-			'id' => $user->id,
 			'token' => $token->plainTextToken,
 			'remember' => false,
+			'user' => [
+				'id' => $user->id,
+				'is_admin' => $user->is_admin,
+			],
 		]);
 	}
 
