@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Rules\CannotChange;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -121,6 +122,14 @@ class Food extends Model
 	];
 
 	/**
+	 * @return array
+	 */
+	public function additionalAttributes() : array
+	{
+		return ['is_favourite', 'is_verified'];
+	}
+
+	/**
 	 * @param  array $data
 	 * @return array
 	 */
@@ -129,6 +138,26 @@ class Food extends Model
 		return [
 			'user_id' => Auth::guard('sanctum')->id(),
 		];
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function getIsFavouriteAttribute() : bool
+	{
+		$user = Auth::guard('sanctum')->user();
+		if (!$user) {
+			return false;
+		}
+		return in_array($this->id, $user->favourites()->pluck('food_id')->toArray()); // TODO: Performance.
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getIsVerifiedAttribute() : string
+	{
+		return empty($this->user_id);
 	}
 
 	/**

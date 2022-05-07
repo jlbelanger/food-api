@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Food;
 use App\Rules\CannotChange;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -55,6 +57,14 @@ class User extends Authenticatable
 		'favourites_only' => 'boolean',
 		'is_admin' => 'boolean',
 	];
+
+	/**
+	 * @return BelongsToMany
+	 */
+	public function favourites() : BelongsToMany
+	{
+		return $this->belongsToMany(Food::class);
+	}
 
 	/**
 	 * @param  array  $data
