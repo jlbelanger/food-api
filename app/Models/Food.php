@@ -191,6 +191,10 @@ class Food extends Model
 		}
 		$rules['attributes.slug'][] = $unique;
 
+		if (!Auth::guard('sanctum')->user()->is_admin) {
+			$rules['relationships.user'] = [new CannotChange()];
+		}
+
 		return $rules;
 	}
 
