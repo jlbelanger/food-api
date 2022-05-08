@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use App\Models\Food;
+use App\Models\Weight;
 use App\Rules\CannotChange;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Jlbelanger\Tapioca\Traits\Resource;
 use Laravel\Sanctum\HasApiTokens;
@@ -59,11 +62,27 @@ class User extends Authenticatable
 	];
 
 	/**
+	 * @return array
+	 */
+	public function additionalAttributes() : array
+	{
+		return ['weight', 'weight_date'];
+	}
+
+	/**
 	 * @return BelongsToMany
 	 */
 	public function favourites() : BelongsToMany
 	{
 		return $this->belongsToMany(Food::class);
+	}
+
+	/**
+	 * @return Weight|null
+	 */
+	public function getWeightAttribute()
+	{
+		return $this->weights()->select(['date', 'weight'])->orderBy('date', 'desc')->first();
 	}
 
 	/**
@@ -78,14 +97,18 @@ class User extends Authenticatable
 			'attributes.username' => [$required, 'alpha_num', 'max:255'],
 			'attributes.email' => [new CannotChange()],
 			'attributes.password' => [new CannotChange()],
-			'attributes.sex' => [Rule::in(['f', 'm'])],
-			'attributes.age' => ['integer'],
-			'attributes.height' => ['integer'],
-			'attributes.activity_level' => ['integer'],
+			'attributes.sex' => ['nullable', Rule::in(['f', 'm'])],
+			'attributes.age' => ['nullable', 'integer'],
+			'attributes.height' => ['nullable', 'integer'],
+			'attributes.activity_level' => ['nullable', 'integer'],
 			'attributes.measurement_units' => [Rule::in(['i', 'm'])],
 			'attributes.favourites_only' => ['boolean'],
 			'attributes.is_admin' => [new CannotChange()],
 		];
+
+		if (Auth::guard('sanctum')->user()->username === 'demo') {
+			$rules['attributes.username'][] = new CannotChange();
+		}
 
 		$unique = Rule::unique($this->getTable(), 'username');
 		if ($this->id) {
@@ -100,6 +123,14 @@ class User extends Authenticatable
 		$rules['attributes.email'][] = $unique;
 
 		return $rules;
+	}
+
+	/**
+	 * @return HasMany
+	 */
+	public function weights() : HasMany
+	{
+		return $this->hasMany(Weight::class);
 	}
 
 	/**
