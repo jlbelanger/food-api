@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Food;
+use App\Models\Trackable;
 use App\Models\Weight;
 use App\Rules\CannotChange;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -78,11 +79,31 @@ class User extends Authenticatable
 	}
 
 	/**
+	 * @return array
+	 */
+	public function getAuthInfo() : array
+	{
+		return [
+			'id' => $this->id,
+			'is_admin' => $this->is_admin,
+			'trackables' => $this->trackables()->pluck('trackables.slug')->toArray(),
+		];
+	}
+
+	/**
 	 * @return Weight|null
 	 */
 	public function getWeightAttribute()
 	{
 		return $this->weights()->select(['date', 'weight'])->orderBy('date', 'desc')->first();
+	}
+
+	/**
+	 * @return array
+	 */
+	public function multiRelationships() : array
+	{
+		return ['trackables'];
 	}
 
 	/**
@@ -123,6 +144,14 @@ class User extends Authenticatable
 		$rules['attributes.email'][] = $unique;
 
 		return $rules;
+	}
+
+	/**
+	 * @return BelongsToMany
+	 */
+	public function trackables() : BelongsToMany
+	{
+		return $this->belongsToMany(Trackable::class);
 	}
 
 	/**
