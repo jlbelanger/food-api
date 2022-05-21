@@ -3,6 +3,10 @@
 namespace App\Providers;
 
 use App\Http\Kernel;
+use App\Models\Food;
+use App\Models\User;
+use App\Observers\FoodObserver;
+use App\Observers\UserObserver;
 use DB;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\ServiceProvider;
@@ -40,5 +44,8 @@ class AppServiceProvider extends ServiceProvider
 		ResetPassword::createUrlUsing(function ($notifiable, string $token) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundInExtendedClassBeforeLastUsed
 			return env('FRONTEND_URL') . '/reset-password/' . $token;
 		});
+
+		Food::observe(FoodObserver::class);
+		User::observe(UserObserver::class);
 	}
 }
