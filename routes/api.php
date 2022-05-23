@@ -17,6 +17,7 @@ Route::group(['middleware' => ['api', 'guest']], function () {
 Route::group(['middleware' => ['api', 'auth:sanctum']], function () {
 	Route::delete('/auth/logout', [\App\Http\Controllers\AuthController::class, 'logout']);
 	Route::post('/food/{id}/favourite', [\App\Http\Controllers\FoodController::class, 'favourite']);
+	Route::post('/meals/{id}/add', [\App\Http\Controllers\MealController::class, 'add']);
 	Route::put('/users/{id}/change-email', [\App\Http\Controllers\UserController::class, 'changeEmail']);
 	Route::put('/users/{id}/change-password', [\App\Http\Controllers\UserController::class, 'changePassword']);
 
