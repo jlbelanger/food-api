@@ -79,13 +79,16 @@ class User extends Authenticatable
 	}
 
 	/**
+	 * @param  boolean $remember
 	 * @return array
 	 */
-	public function getAuthInfo() : array
+	public function getAuthInfo(bool $remember) : array
 	{
 		return [
 			'id' => $this->id,
 			'is_admin' => $this->is_admin,
+			'measurement_units' => $this->measurement_units,
+			'remember' => $remember,
 			'trackables' => $this->trackables()->pluck('trackables.slug')->toArray(),
 		];
 	}

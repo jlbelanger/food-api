@@ -52,7 +52,7 @@ class AuthController extends Controller
 		return response()->json([
 			'token' => $token->plainTextToken,
 			'remember' => $remember,
-			'user' => $user->getAuthInfo(),
+			'user' => $user->getAuthInfo($remember),
 		]);
 	}
 
@@ -102,7 +102,7 @@ class AuthController extends Controller
 		return response()->json([
 			'token' => $token->plainTextToken,
 			'remember' => false,
-			'user' => $user->getAuthInfo(),
+			'user' => $user->getAuthInfo(false),
 		]);
 	}
 
