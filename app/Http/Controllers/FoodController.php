@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Jlbelanger\Tapioca\Controllers\AuthorizedResourceController;
+use Jlbelanger\Tapioca\Exceptions\NotFoundException;
 
 class FoodController extends AuthorizedResourceController
 {
