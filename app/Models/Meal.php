@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use App\Models\Food;
+use App\Models\FoodMeal;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Jlbelanger\Tapioca\Traits\Resource;
@@ -61,11 +61,11 @@ class Meal extends Model
 	}
 
 	/**
-	 * @return BelongsToMany
+	 * @return HasMany
 	 */
-	public function foods() : BelongsToMany
+	public function foods() : HasMany
 	{
-		return $this->belongsToMany(Food::class)->withPivot('user_serving_size');
+		return $this->hasMany(FoodMeal::class, 'meal_id');
 	}
 
 	/**
