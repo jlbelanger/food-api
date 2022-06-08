@@ -238,12 +238,14 @@ class Food extends Model
 	/**
 	 * @param  string $key
 	 * @param  string $filename
+	 * @param  array  $data
 	 * @return string
 	 */
-	public function uploadedFilename(string $key, string $filename) : string
+	public function uploadedFilename(string $key, string $filename, array $data = []) : string
 	{
+		$slug = !empty($data) ? $data['attributes']['slug'] : $this->slug;
 		$pathInfo = pathinfo($filename);
-		return '/uploads/food/' . $key . '/' . $this->slug . '.' . $pathInfo['extension'];
+		return '/uploads/food/' . $key . '/' . $slug . '.' . $pathInfo['extension'];
 	}
 
 	/**
