@@ -53,8 +53,8 @@ class FoodMeal extends Model
 	{
 		$required = $method === 'POST' ? 'required' : 'filled';
 		return [
-			'relationships.food' => [$required],
-			'relationships.meal' => [$required],
+			'attributes.food_id' => [$required],
+			'attributes.meal_id' => [$required],
 			'attributes.user_serving_size' => [$required, 'numeric'],
 		];
 	}
@@ -64,6 +64,6 @@ class FoodMeal extends Model
 	 */
 	public function singularRelationships() : array
 	{
-		return ['food'];
+		return ['food', 'meal'];
 	}
 }
