@@ -44,8 +44,10 @@ class Entry extends Model
 	 */
 	public function defaultAttributes(array $data) : array // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundInExtendedClass
 	{
+		$foodId = !empty($data['attributes']['food_id']) ? $data['attributes']['food_id'] : null;
 		return [
 			'user_id' => Auth::guard('sanctum')->id(),
+			'user_serving_size' => $foodId ? Food::find($foodId)->serving_size : 0,
 		];
 	}
 
@@ -79,7 +81,6 @@ class Entry extends Model
 		$required = $method === 'POST' ? 'required' : 'filled';
 		return [
 			'relationships.food' => [$required],
-			'attributes.user_serving_size' => [$required, 'numeric'],
 			'attributes.date' => [$required, 'date'],
 		];
 	}
