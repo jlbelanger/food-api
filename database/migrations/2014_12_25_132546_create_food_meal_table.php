@@ -16,7 +16,7 @@ class CreateFoodMealTable extends Migration
 		Schema::create('food_meal', function (Blueprint $table) {
 			$table->id();
 			$table->foreignId('food_id')->references('id')->on('food')->constrained()->onDelete('restrict');
-			$table->foreignId('meal_id')->references('id')->on('meals')->constrained()->onDelete('restrict');
+			$table->foreignId('meal_id')->references('id')->on('meals')->constrained()->onDelete('cascade');
 			$table->double('user_serving_size', 9, 6);
 			$table->timestamps();
 		});
