@@ -31,23 +31,7 @@ Route::group(['middleware' => ['api', 'auth:sanctum']], function () {
 
 		$user = Auth::guard('sanctum')->user();
 		$trackables = $user->trackables()->get();
-		$select = ['entries.date'];
-		foreach ($trackables as $trackable) {
-			$select[] = DB::raw('SUM(ROUND((entries.user_serving_size / food.serving_size) * food.' . $trackable->slug . ')) AS ' . $trackable->slug);
-		}
-
-		$data = DB::table('entries')
-			->select($select)
-			->join('food', 'entries.food_id', 'food.id')
-			->where('entries.user_id', '=', $user->id)
-			->where('entries.date', 'LIKE', $year . '-%')
-			->whereNull('entries.deleted_at')
-			->groupBy('entries.date')
-			->get();
-		$dataByDate = [];
-		foreach ($data as $d) {
-			$dataByDate[$d->date] = $d;
-		}
+		$dataByDate = $user->getDataByDate($trackables, $year);
 
 		if ($year === date('Y')) {
 			$maxMonth = date('m');
@@ -120,6 +104,40 @@ Route::group(['middleware' => ['api', 'auth:sanctum']], function () {
 		$months = array_reverse($months);
 
 		return response()->json($months);
+	});
+
+	Route::get('/charts', function () {
+		$user = Auth::guard('sanctum')->user();
+		$trackables = $user->trackables()->get();
+		$data = $user->getDataByDate($trackables);
+		$output = [
+			'Weight' => [],
+		];
+
+		foreach ($data as $row) {
+			if (!empty($row->weight)) {
+				$output['Weight'][$row->date] = $row->weight;
+			}
+			foreach ($trackables as $trackable) {
+				if (!empty($row->{$trackable->slug})) {
+					$output[$trackable->name][$row->date] = $row->{$trackable->slug};
+				}
+			}
+		}
+
+		foreach ($output as $label => $values) {
+			$points = [];
+			ksort($values);
+			foreach ($values as $x => $y) {
+				$points[] = [
+					'x' => $x,
+					'y' => $y,
+				];
+			}
+			$output[$label] = $points;
+		}
+
+		return response()->json($output);
 	});
 
 	Route::apiResources([

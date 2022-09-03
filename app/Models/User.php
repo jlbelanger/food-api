@@ -6,6 +6,8 @@ use App\Models\Food;
 use App\Models\Trackable;
 use App\Models\Weight;
 use App\Rules\CannotChange;
+use DB;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -91,6 +93,52 @@ class User extends Authenticatable
 			'remember' => $remember,
 			'trackables' => $this->trackables()->pluck('trackables.slug')->toArray(),
 		];
+	}
+
+	/**
+	 * @param  Collection   $trackables
+	 * @param  integer|null $year
+	 * @return array
+	 */
+	public function getDataByDate(Collection $trackables, int $year = null) : array
+	{
+		$select = ['entries.date'];
+		foreach ($trackables as $trackable) {
+			$select[] = DB::raw('SUM(ROUND((entries.user_serving_size / food.serving_size) * food.' . $trackable->slug . ')) AS ' . $trackable->slug);
+		}
+
+		$data = DB::table('entries')
+			->select($select)
+			->join('food', 'entries.food_id', 'food.id')
+			->where('entries.user_id', '=', $this->id);
+		if ($year) {
+			$data = $data->where('entries.date', 'LIKE', $year . '-%');
+		}
+		$data = $data->whereNull('entries.deleted_at')
+			->groupBy('entries.date')
+			->get();
+
+		$output = [];
+		foreach ($data as $d) {
+			$output[$d->date] = $d;
+		}
+
+		$weights = DB::table('weights')
+			->select(['weight', 'date'])
+			->where('user_id', '=', $this->id);
+		if ($year) {
+			$weights = $weights->where('date', 'LIKE', $year . '-%');
+		}
+		$weights = $weights->get();
+		foreach ($weights as $weight) {
+			if (empty($output[$weight->date])) {
+				$output[$weight->date] = new \stdClass;
+				$output[$weight->date]->date = $weight->date;
+			}
+			$output[$weight->date]->weight = $weight->weight;
+		}
+
+		return $output;
 	}
 
 	/**
