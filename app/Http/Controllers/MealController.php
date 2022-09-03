@@ -33,14 +33,14 @@ class MealController extends AuthorizedResourceController
 
 		foreach ($foods as $mealFood) {
 			$entry = new Entry();
-			$entry->food_id = $mealFood->pivot->food_id;
+			$entry->food_id = $mealFood->food_id;
 			$entry->user_id = $user->id;
-			$entry->user_serving_size = $mealFood->pivot->user_serving_size;
+			$entry->user_serving_size = $mealFood->user_serving_size;
 			$entry->date = $date;
 			$entry->save();
 			$output[] = $entry->data(['food'], ['entries' => ['user_serving_size']]);
 
-			$included[$mealFood->pivot->food_id] = $mealFood->pivot->food_id;
+			$included[$mealFood->food_id] = $mealFood->food_id;
 		}
 
 		$included = Food::whereIn('id', $included)
