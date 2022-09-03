@@ -153,9 +153,9 @@ class Food extends Model
 	}
 
 	/**
-	 * @return string
+	 * @return boolean
 	 */
-	public function getIsVerifiedAttribute() : string
+	public function getIsVerifiedAttribute() : bool
 	{
 		return empty($this->user_id);
 	}

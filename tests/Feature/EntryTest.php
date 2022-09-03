@@ -49,7 +49,6 @@ class EntryTest extends TestCase
 					'data' => [
 						'type' => 'entries',
 						'attributes' => [
-							'user_serving_size' => 2,
 							'date' => '2004-05-06',
 						],
 						'relationships' => [
@@ -67,7 +66,7 @@ class EntryTest extends TestCase
 						'id' => '%id%',
 						'type' => 'entries',
 						'attributes' => [
-							'user_serving_size' => 2,
+							'user_serving_size' => 1.5,
 							'date' => '2004-05-06',
 						],
 					],

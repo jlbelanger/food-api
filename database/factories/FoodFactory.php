@@ -16,7 +16,7 @@ class FoodFactory extends Factory
 		return [
 			'name' => 'Apple',
 			'slug' => 'apple',
-			'serving_size' => 1,
+			'serving_size' => 1.5,
 		];
 	}
 }
