@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use App\Rules\CannotChange;
+use App\Models\Entry;
+use App\Models\FoodMeal;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -126,7 +129,7 @@ class Food extends Model
 	 */
 	public function additionalAttributes() : array
 	{
-		return ['is_favourite', 'is_verified'];
+		return ['deleteable', 'is_favourite', 'is_verified'];
 	}
 
 	/**
@@ -138,6 +141,22 @@ class Food extends Model
 		return [
 			'user_id' => Auth::guard('sanctum')->id(),
 		];
+	}
+
+	/**
+	 * @return HasMany
+	 */
+	public function entries() : HasMany
+	{
+		return $this->hasMany(Entry::class, 'food_id');
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function getDeleteableAttribute() : bool
+	{
+		return !$this->entries()->exists() && !$this->meals()->exists(); // TODO: Performance.
 	}
 
 	/**
@@ -158,6 +177,14 @@ class Food extends Model
 	public function getIsVerifiedAttribute() : bool
 	{
 		return empty($this->user_id);
+	}
+
+	/**
+	 * @return HasMany
+	 */
+	public function meals() : HasMany
+	{
+		return $this->hasMany(FoodMeal::class, 'food_id');
 	}
 
 	/**

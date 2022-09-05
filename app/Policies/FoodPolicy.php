@@ -43,7 +43,7 @@ class FoodPolicy
 	 */
 	public function delete(User $currentUser, Food $food) : bool
 	{
-		return $this->view($currentUser, $food);
+		return $this->view($currentUser, $food) && $food->getDeleteableAttribute();
 	}
 
 	/**
