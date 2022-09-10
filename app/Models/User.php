@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\Rule;
 use Jlbelanger\Tapioca\Traits\Resource;
 use Laravel\Sanctum\HasApiTokens;
@@ -78,6 +79,19 @@ class User extends Authenticatable
 	public function favourites() : BelongsToMany
 	{
 		return $this->belongsToMany(Food::class);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function favouriteFoodIds() : array
+	{
+		if (env('ENABLE_CACHE')) {
+			return Cache::remember('favourites_' . $this->id, 3600, function () {
+				return $this->favourites()->pluck('food_id')->toArray();
+			});
+		}
+		return $this->favourites()->pluck('food_id')->toArray();
 	}
 
 	/**

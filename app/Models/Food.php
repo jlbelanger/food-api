@@ -156,7 +156,7 @@ class Food extends Model
 	 */
 	public function getDeleteableAttribute() : bool
 	{
-		return !$this->entries()->exists() && !$this->meals()->exists(); // TODO: Performance.
+		return !$this->entries()->exists() && !$this->meals()->exists();
 	}
 
 	/**
@@ -168,7 +168,7 @@ class Food extends Model
 		if (!$user) {
 			return false;
 		}
-		return in_array($this->id, $user->favourites()->pluck('food_id')->toArray()); // TODO: Performance.
+		return in_array($this->id, $user->favouriteFoodIds());
 	}
 
 	/**

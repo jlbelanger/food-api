@@ -7,6 +7,7 @@ use DB;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Jlbelanger\Tapioca\Controllers\AuthorizedResourceController;
 use Jlbelanger\Tapioca\Exceptions\NotFoundException;
 
@@ -41,6 +42,10 @@ class FoodController extends AuthorizedResourceController
 					'user_id' => $user->id,
 					'created_at' => date('Y-m-d H:i:s'),
 				]);
+		}
+
+		if (env('ENABLE_CACHE')) {
+			Cache::forget('favourites_' . $user->id);
 		}
 
 		return response()->json(null, 204);
