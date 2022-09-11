@@ -19,6 +19,8 @@ class CreateFoodMealTable extends Migration
 			$table->foreignId('meal_id')->references('id')->on('meals')->constrained()->onDelete('cascade');
 			$table->double('user_serving_size', 9, 6);
 			$table->timestamps();
+
+			$table->unique(['food_id', 'meal_id']);
 		});
 	}
 

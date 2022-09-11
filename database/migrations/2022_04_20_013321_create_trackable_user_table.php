@@ -18,6 +18,8 @@ class CreateTrackableUserTable extends Migration
 			$table->foreignId('trackable_id')->references('id')->on('trackables')->constrained()->onDelete('cascade');
 			$table->foreignId('user_id')->references('id')->on('users')->constrained()->onDelete('cascade');
 			$table->timestamps();
+
+			$table->unique(['trackable_id', 'user_id']);
 		});
 	}
 

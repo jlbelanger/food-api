@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Jlbelanger\Tapioca\Traits\Resource;
 
 class Weight extends Model
@@ -65,10 +66,24 @@ class Weight extends Model
 	protected function rules(array $data, string $method) : array // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundInExtendedClassBeforeLastUsed
 	{
 		$required = $method === 'POST' ? 'required' : 'filled';
-		return [
+		$rules = [
 			'attributes.weight' => [$required, 'numeric'],
 			'attributes.date' => [$required, 'date'],
 		];
+
+		$userId = !empty($data['attributes']['user_id']) ? $data['attributes']['user_id'] : $this->user_id;
+		if (empty($userId)) {
+			$userId = Auth::guard('sanctum')->id();
+		}
+		$unique = Rule::unique($this->getTable(), 'date')->where(function ($query) use ($userId) {
+			return $query->where('user_id', '=', $userId);
+		});
+		if ($this->id) {
+			$unique->ignore($this->id);
+		}
+		$rules['attributes.date'][] = $unique;
+
+		return $rules;
 	}
 
 	/**

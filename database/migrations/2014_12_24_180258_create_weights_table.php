@@ -19,6 +19,8 @@ class CreateWeightsTable extends Migration
 			$table->double('weight', 4, 1);
 			$table->date('date');
 			$table->timestamps();
+
+			$table->unique(['date', 'user_id']);
 		});
 	}
 
