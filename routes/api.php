@@ -21,6 +21,7 @@ Route::group(['middleware' => ['api', 'auth:sanctum']], function () {
 	Route::post('/meals/{id}/add', [\App\Http\Controllers\MealController::class, 'add']);
 	Route::put('/users/{id}/change-email', [\App\Http\Controllers\UserController::class, 'changeEmail']);
 	Route::put('/users/{id}/change-password', [\App\Http\Controllers\UserController::class, 'changePassword']);
+	Route::post('/users/{id}/delete-data', [\App\Http\Controllers\UserController::class, 'deleteData']);
 
 	Route::get('/calendar/{year}', function ($year) {
 		$months = [];

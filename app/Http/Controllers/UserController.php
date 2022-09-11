@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Entry;
+use App\Models\Extra;
+use App\Models\Meal;
 use App\Models\User;
+use App\Models\Weight;
+use DB;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -108,6 +113,42 @@ class UserController extends AuthorizedResourceController
 		])->save();
 		$user->setRememberToken(Str::random(60));
 		event(new PasswordReset($user));
+
+		return response()->json(null, 204);
+	}
+
+	/**
+	 * @param  Request $request
+	 * @return JsonResponse
+	 */
+	public function deleteData(Request $request) : JsonResponse
+	{
+		$user = Auth::guard('sanctum')->user();
+		if (!$user) {
+			throw NotFoundException::generate();
+		}
+
+		$types = $request->input('types');
+		if (empty($types)) {
+			return response()->json(['message' => 'Please select at least one type of data to delete.'], 422);
+		}
+
+		DB::beginTransaction();
+
+		if (in_array('weights', $types)) {
+			Weight::where('user_id', '=', $user->id)->delete();
+		}
+
+		if (in_array('meals', $types)) {
+			Meal::where('user_id', '=', $user->id)->delete();
+		}
+
+		if (in_array('entries', $types)) {
+			Entry::where('user_id', '=', $user->id)->delete();
+			Extra::where('user_id', '=', $user->id)->delete();
+		}
+
+		DB::commit();
 
 		return response()->json(null, 204);
 	}
