@@ -198,7 +198,7 @@ class Food extends Model
 		$rules = [
 			'attributes.name' => [$required, 'max:255'],
 			'attributes.slug' => [$required, 'max:255'],
-			'attributes.serving_size' => [$required, 'numeric'],
+			'attributes.serving_size' => [$required, 'regex:/(\d+ )?\d+(\/\d+|\.\d+)?/'],
 			'attributes.calories' => ['nullable', 'integer'],
 			'attributes.fat' => ['nullable', 'numeric'],
 			'attributes.saturated_fat' => ['nullable', 'numeric'],
@@ -252,6 +252,84 @@ class Food extends Model
 		}
 
 		return $rules;
+	}
+
+	/**
+	 * @param  string $value
+	 * @return void
+	 */
+	public function setServingSizeAttribute($value) // phpcs:ignore Squiz.Commenting.FunctionComment.ScalarTypeHintMissing
+	{
+		if (strpos($value, '/') !== false) {
+			if (strpos($value, ' ') !== false) {
+				$whole = preg_replace('/^([^ ]+) .*$/', '$1', $value);
+				$value = preg_replace('/^([^ ]+) /', '', $value);
+			} elseif (strpos($value, '-') !== false) {
+				$whole = preg_replace('/^([^-]+)-.*$/', '$1', $value);
+				$value = preg_replace('/^([^-]+)-/', '', $value);
+			} else {
+				$whole = 0;
+			}
+
+			$value = explode('/', $value);
+
+			if (empty($value[1])) {
+				$value = $whole;
+			} else {
+				$value = $whole + round($value[0] / $value[1], 2);
+			}
+		}
+
+		$this->attributes['serving_size'] = $value;
+	}
+
+	/**
+	 * @param  string $value
+	 * @return void
+	 */
+	public function setServingUnitsAttribute($value) // phpcs:ignore Squiz.Commenting.FunctionComment.ScalarTypeHintMissing
+	{
+		if (!$value) {
+			$this->attributes['serving_units'] = null;
+			return;
+		}
+
+		$value = strtolower($value);
+
+		$replace = [
+			'boxes' => 'box',
+			'dashes' => 'dash',
+			'dishes' => 'dish',
+			'gr' => 'g',
+			'gram' => 'g',
+			'grams' => 'g',
+			'grs' => 'g',
+			'inches' => 'inch',
+			'leaves' => 'leaf',
+			'ounce' => 'oz',
+			'ounces' => 'oz',
+			'pastries' => 'pastry',
+			'patties' => 'patty',
+			'pc' => 'piece',
+			'pcs' => 'piece',
+			'potatoes' => 'potato',
+			'pouches' => 'pouch',
+			'sandwiches' => 'sandwich',
+			'tablespoon' => 'tbsp',
+			'tablespoons' => 'tbsp',
+			'tblsp' => 'tbsp',
+			'tblsps' => 'tbsp',
+			'teaspoon' => 'tsp',
+			'teaspoons' => 'tsp',
+			'tomatoes' => 'tomato',
+		];
+		if (!empty($replace[$value])) {
+			$value = $replace[$value];
+		}
+
+		$value = preg_replace('/s$/', '', $value);
+
+		$this->attributes['serving_units'] = $value;
 	}
 
 	/**
