@@ -35,17 +35,9 @@ class FoodController extends AuthorizedResourceController
 			DB::table('food_user')
 				->where('id', '=', $favourite->id)
 				->delete();
+			$user->clearFavouritesCache();
 		} else {
-			DB::table('food_user')
-				->insert([
-					'food_id' => $id,
-					'user_id' => $user->id,
-					'created_at' => date('Y-m-d H:i:s'),
-				]);
-		}
-
-		if (env('ENABLE_CACHE')) {
-			Cache::forget('favourites_' . $user->id);
+			$food->addFavourite($user);
 		}
 
 		return response()->json(null, 204);

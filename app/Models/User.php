@@ -74,6 +74,16 @@ class User extends Authenticatable
 	}
 
 	/**
+	 * @return void
+	 */
+	public function clearFavouritesCache() : void
+	{
+		if (env('ENABLE_CACHE')) {
+			Cache::forget('favourites_' . $this->id);
+		}
+	}
+
+	/**
 	 * @return BelongsToMany
 	 */
 	public function favourites() : BelongsToMany

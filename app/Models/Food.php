@@ -7,6 +7,7 @@ use App\Models\Entry;
 use App\Models\FoodMeal;
 use App\Models\Meal;
 use App\Models\User;
+use DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -125,6 +126,20 @@ class Food extends Model
 		'molybdenum' => 'integer',
 		'chloride' => 'integer',
 	];
+
+	/**
+	 * @param  User $user
+	 * @return void
+	 */
+	public function addFavourite(User $user) : void
+	{
+		DB::table('food_user')->insert([
+			'food_id' => $this->id,
+			'user_id' => $user->id,
+			'created_at' => date('Y-m-d H:i:s'),
+		]);
+		$user->clearFavouritesCache();
+	}
 
 	/**
 	 * @return array
@@ -348,6 +363,17 @@ class Food extends Model
 	public function singularRelationships() : array
 	{
 		return ['user'];
+	}
+
+	/**
+	 * @param  array $meta
+	 * @return void
+	 */
+	public function updateMeta(array $meta) : void
+	{
+		if (!empty($meta['is_favourite'])) {
+			$this->addFavourite(Auth::guard('sanctum')->user());
+		}
 	}
 
 	/**
