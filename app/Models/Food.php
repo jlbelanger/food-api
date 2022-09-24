@@ -5,11 +5,13 @@ namespace App\Models;
 use App\Rules\CannotChange;
 use App\Models\Entry;
 use App\Models\FoodMeal;
+use App\Models\Meal;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -188,6 +190,14 @@ class Food extends Model
 	}
 
 	/**
+	 * @return array
+	 */
+	public function multiRelationships() : array
+	{
+		return ['user_entries', 'user_meals'];
+	}
+
+	/**
 	 * @param  array  $data
 	 * @param  string $method
 	 * @return array
@@ -359,5 +369,37 @@ class Food extends Model
 	public function user() : BelongsTo
 	{
 		return $this->belongsTo(User::class);
+	}
+
+	/**
+	 * @return HasMany
+	 */
+	public function userEntries() : HasMany
+	{
+		$user = Auth::guard('sanctum')->user();
+		$output = $this->hasMany(Entry::class, 'food_id');
+		if (!$user->is_admin) {
+			$output = $output->where('entries.user_id', '=', $user->id);
+		} else {
+			$output = $output->with('user');
+		}
+		$output = $output->orderBy('entries.date', 'desc');
+		return $output;
+	}
+
+	/**
+	 * @return HasManyThrough
+	 */
+	public function userMeals() : HasManyThrough
+	{
+		$user = Auth::guard('sanctum')->user();
+		$output = $this->hasManyThrough(Meal::class, FoodMeal::class, 'food_id', 'id', 'id', 'meal_id');
+		if (!$user->is_admin) {
+			$output = $output->where('meals.user_id', '=', $user->id);
+		} else {
+			$output = $output->with('user');
+		}
+		$output = $output->orderBy('meals.name');
+		return $output;
 	}
 }
