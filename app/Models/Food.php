@@ -386,7 +386,11 @@ class Food extends Model
 	{
 		$slug = !empty($data['attributes']['slug']) ? $data['attributes']['slug'] : $this->slug;
 		$pathInfo = pathinfo($filename);
-		return '/uploads/food/' . $key . '/' . $slug . '.' . $pathInfo['extension'];
+		$extension = strtolower($pathInfo['extension']);
+		if ($extension === 'jpeg') {
+			$extension = 'jpg';
+		}
+		return '/uploads/food/' . $key . '/' . Str::random(16) . '/' . $slug . '.' . $extension;
 	}
 
 	/**
