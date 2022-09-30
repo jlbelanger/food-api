@@ -408,7 +408,7 @@ class Food extends Model
 		if ($extension === 'jpeg') {
 			$extension = 'jpg';
 		}
-		return '/uploads/food/' . $key . '/' . Str::random(16) . '/' . $slug . '.' . $extension;
+		return '/uploads/food/' . $key . '/' . strtolower(Str::random(16)) . '/' . $slug . '.' . $extension;
 	}
 
 	/**
