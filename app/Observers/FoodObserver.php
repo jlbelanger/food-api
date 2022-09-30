@@ -20,11 +20,15 @@ class FoodObserver
 		$keys = ['front_image', 'info_image'];
 		foreach ($keys as $key) {
 			if ($food->$key) {
-				$newFilename = $food->uploadedFilename($key, $food->$key);
-				$oldFilename = preg_replace('/\/' . $food->slug . '\./', '/' . $food->getOriginal('slug') . '.', $newFilename);
+				$oldFilename = $food->$key;
+				$newFilename = $food->uploadedFilename($key, $oldFilename);
 				$oldPath = public_path($oldFilename);
 				$newPath = public_path($newFilename);
 				if (file_exists($oldPath) && !file_exists($newPath)) {
+					$folder = preg_replace('/\/[^\/]+$/', '', $newPath);
+					if (!is_dir($folder)) {
+						mkdir($folder);
+					}
 					rename($oldPath, $newPath);
 					$food->$key = $newFilename;
 				}
