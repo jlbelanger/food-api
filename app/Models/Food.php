@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use App\Rules\CannotChange;
+use App\Helpers\Image;
 use App\Models\Entry;
 use App\Models\FoodMeal;
 use App\Models\Meal;
 use App\Models\User;
+use App\Rules\CannotChange;
 use DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Jlbelanger\Tapioca\Traits\Resource;
 
@@ -210,6 +212,22 @@ class Food extends Model
 	public function multiRelationships() : array
 	{
 		return ['user_entries', 'user_meals'];
+	}
+
+	/**
+	 * @param  string $key
+	 * @param  string $filename
+	 * @return void
+	 */
+	public function processFile(string $key, string $filename) : void // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundInExtendedClassBeforeLastUsed
+	{
+		if (!$filename) {
+			return;
+		}
+
+		$path = public_path($filename);
+		list($oldWidth, $oldHeight, $fileType) = getimagesize($path);
+		Image::resize($oldWidth, $oldHeight, 500, $path, $path, $fileType);
 	}
 
 	/**
