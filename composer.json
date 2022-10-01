@@ -1,6 +1,6 @@
 {
 	"name": "jlbelanger/food-api",
-	"description": "Track how many calories you eat each day.",
+	"description": "Track calories and nutrients in the food you eat.",
 	"version": "1.0.0",
 	"type": "project",
 	"license": "GPL-3.0-only",
