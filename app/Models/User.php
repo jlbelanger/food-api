@@ -115,7 +115,7 @@ class User extends Authenticatable
 			'is_admin' => $this->is_admin,
 			'measurement_units' => $this->measurement_units,
 			'remember' => $remember,
-			'trackables' => $this->trackables()->pluck('trackables.slug')->toArray(),
+			'trackables' => $this->trackables()->orderBy('trackables.id')->pluck('trackables.slug')->toArray(),
 		];
 	}
 
