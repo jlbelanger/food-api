@@ -341,6 +341,7 @@ class Food extends Model
 
 		$replace = [
 			'boxes' => 'box',
+			'cherries' => 'cherry',
 			'dashes' => 'dash',
 			'dishes' => 'dish',
 			'gr' => 'g',
