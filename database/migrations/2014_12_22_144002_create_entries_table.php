@@ -17,7 +17,7 @@ class CreateEntriesTable extends Migration
 			$table->id();
 			$table->foreignId('food_id')->references('id')->on('food')->constrained()->onDelete('restrict');
 			$table->foreignId('user_id')->references('id')->on('users')->constrained()->onDelete('cascade');
-			$table->double('user_serving_size', 9, 6);
+			$table->double('user_serving_size', 10, 6);
 			$table->date('date');
 			$table->timestamps();
 			$table->softDeletes();
