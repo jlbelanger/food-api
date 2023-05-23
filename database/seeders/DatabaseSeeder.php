@@ -13,5 +13,14 @@ class DatabaseSeeder extends Seeder
 	 */
 	public function run()
 	{
+		$date = date('Y-m-d H:i:s');
+
+		DB::table('users')->insert([
+			'username' => 'demo',
+			'email' => 'demo@example.com',
+			'password' => bcrypt('demo'),
+			'created_at' => $date,
+		]);
+		$userId = DB::getPdo()->lastInsertId();
 	}
 }
