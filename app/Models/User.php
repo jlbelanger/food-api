@@ -78,7 +78,7 @@ class User extends Authenticatable
 	 */
 	public function clearFavouritesCache() : void
 	{
-		if (env('ENABLE_CACHE')) {
+		if (config('cache.enable')) {
 			Cache::forget('favourites_' . $this->id);
 		}
 	}
@@ -96,7 +96,7 @@ class User extends Authenticatable
 	 */
 	public function favouriteFoodIds() : array
 	{
-		if (env('ENABLE_CACHE')) {
+		if (config('cache.enable')) {
 			return Cache::remember('favourites_' . $this->id, 3600, function () {
 				return $this->favourites()->pluck('food_id')->toArray();
 			});

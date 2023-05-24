@@ -4,6 +4,8 @@ use Illuminate\Support\Str;
 
 return [
 
+	'enable' => env('ENABLE_CACHE', true),
+
 	/*
 	|--------------------------------------------------------------------------
 	| Default Cache Store
