@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Validation\Rules\Password;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -11,15 +12,7 @@ class AuthServiceProvider extends ServiceProvider
 	 *
 	 * @var array<class-string, class-string>
 	 */
-	protected $policies = [
-		'App\Models\Entry' => \App\Policies\EntryPolicy::class,
-		'App\Models\Extra' => \App\Policies\ExtraPolicy::class,
-		'App\Models\Food' => \App\Policies\FoodPolicy::class,
-		'App\Models\Meal' => \App\Policies\MealPolicy::class,
-		'App\Models\Trackable' => \App\Policies\TrackablePolicy::class,
-		'App\Models\User' => \App\Policies\UserPolicy::class,
-		'App\Models\Weight' => \App\Policies\WeightPolicy::class,
-	];
+	protected $policies = [];
 
 	/**
 	 * Registers any authentication / authorization services.
@@ -29,5 +22,9 @@ class AuthServiceProvider extends ServiceProvider
 	public function boot()
 	{
 		$this->registerPolicies();
+
+		Password::defaults(function () {
+			return Password::min(8);
+		});
 	}
 }
