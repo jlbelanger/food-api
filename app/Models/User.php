@@ -128,7 +128,7 @@ class User extends Authenticatable
 	{
 		$select = ['entries.date'];
 		foreach ($trackables as $trackable) {
-			$select[] = DB::raw('SUM(ROUND((entries.user_serving_size / food.serving_size) * food.' . $trackable->slug . ')) AS ' . $trackable->slug);
+			$select[] = DB::raw('SUM(ROUND((entries.user_serving_size / food.serving_size) * food.?)) AS ?', [$trackable->slug, $trackable->slug]);
 		}
 
 		$data = DB::table('entries')
