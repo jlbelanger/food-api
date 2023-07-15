@@ -16,3 +16,4 @@ deploy_composer
 deploy_laravel
 clear_laravel_cache
 create_uploads_folder
+printf "\e[0;32mDone.\n\e[0m"
