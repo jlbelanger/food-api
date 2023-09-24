@@ -1,6 +1,6 @@
 # Food Tracker API
 
-View the app at https://food.jennybelanger.com/
+[View the site](https://food.jennybelanger.com/).
 
 ## Development
 
