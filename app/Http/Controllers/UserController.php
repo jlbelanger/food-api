@@ -54,7 +54,7 @@ class UserController extends AuthorizedResourceController
 		}
 		if (!Hash::check($data['attributes']['password'], $user->password)) {
 			$error = [
-				'title' => 'Current password is incorrect.',
+				'title' => __('validation.current_password'),
 				'source' => [
 					'pointer' => '/data/attributes/password',
 				],
@@ -100,7 +100,7 @@ class UserController extends AuthorizedResourceController
 		}
 		if (!Hash::check($data['attributes']['password'], $user->password)) {
 			$error = [
-				'title' => 'Current password is incorrect.',
+				'title' => __('validation.current_password'),
 				'source' => [
 					'pointer' => '/data/attributes/password',
 				],
