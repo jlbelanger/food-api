@@ -9,7 +9,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Jlbelanger\Tapioca\Controllers\AuthorizedResourceController;
-use Jlbelanger\Tapioca\Exceptions\NotFoundException;
 
 class MealController extends AuthorizedResourceController
 {
@@ -24,7 +23,7 @@ class MealController extends AuthorizedResourceController
 		$user = Auth::guard('sanctum')->user();
 		$date = $request->input('date');
 		if (!$meal || !$user || !$date) {
-			throw NotFoundException::generate();
+			abort(404);
 		}
 
 		$foods = $meal->foods()->get();

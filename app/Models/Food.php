@@ -7,7 +7,6 @@ use App\Models\Entry;
 use App\Models\FoodMeal;
 use App\Models\Meal;
 use App\Models\User;
-use App\Rules\CannotChange;
 use DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -291,7 +290,7 @@ class Food extends Model
 		$rules['attributes.slug'][] = $unique;
 
 		if (!Auth::guard('sanctum')->user()->is_admin) {
-			$rules['relationships.user'] = [new CannotChange()];
+			$rules['relationships.user'] = ['prohibited'];
 		}
 
 		return $rules;

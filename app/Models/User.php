@@ -5,8 +5,8 @@ namespace App\Models;
 use App\Models\Food;
 use App\Models\Trackable;
 use App\Models\Weight;
-use App\Rules\CannotChange;
 use DB;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -20,7 +20,7 @@ use Illuminate\Validation\Rule;
 use Jlbelanger\Tapioca\Traits\Resource;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
 	use HasApiTokens, HasFactory, Notifiable, Resource, SoftDeletes;
 
@@ -63,6 +63,7 @@ class User extends Authenticatable
 		'activity_level' => 'integer',
 		'favourites_only' => 'boolean',
 		'is_admin' => 'boolean',
+		'email_verified_at' => 'datetime',
 	];
 
 	/**
@@ -192,19 +193,19 @@ class User extends Authenticatable
 		$required = $method === 'POST' ? 'required' : 'filled';
 		$rules = [
 			'attributes.username' => [$required, 'alpha_num', 'max:255'],
-			'attributes.email' => [new CannotChange()],
-			'attributes.password' => [new CannotChange()],
+			'attributes.email' => ['prohibited'],
+			'attributes.password' => ['prohibited'],
 			'attributes.sex' => ['nullable', Rule::in(['f', 'm'])],
 			'attributes.age' => ['nullable', 'integer'],
 			'attributes.height' => ['nullable', 'integer'],
 			'attributes.activity_level' => ['nullable', 'integer'],
 			'attributes.measurement_units' => [Rule::in(['i', 'm'])],
 			'attributes.favourites_only' => ['boolean'],
-			'attributes.is_admin' => [new CannotChange()],
+			'attributes.is_admin' => ['prohibited'],
 		];
 
 		if (Auth::guard('sanctum')->user()->username === 'demo') {
-			$rules['attributes.username'][] = new CannotChange();
+			$rules['attributes.username'][] = 'prohibited';
 		}
 
 		$unique = Rule::unique($this->getTable(), 'username');
@@ -212,12 +213,6 @@ class User extends Authenticatable
 			$unique->ignore($this->id);
 		}
 		$rules['attributes.username'][] = $unique;
-
-		$unique = Rule::unique($this->getTable(), 'email');
-		if ($this->id) {
-			$unique->ignore($this->id);
-		}
-		$rules['attributes.email'][] = $unique;
 
 		return $rules;
 	}

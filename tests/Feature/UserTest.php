@@ -201,7 +201,7 @@ class UserTest extends TestCase
 				'response' => [
 					'errors' => [
 						[
-							'title' => 'The email cannot be changed.',
+							'title' => 'The email field is prohibited.',
 							'source' => [
 								'pointer' => '/data/attributes/email',
 							],
@@ -225,7 +225,7 @@ class UserTest extends TestCase
 				'response' => [
 					'errors' => [
 						[
-							'title' => 'The password cannot be changed.',
+							'title' => 'The password field is prohibited.',
 							'source' => [
 								'pointer' => '/data/attributes/password',
 							],

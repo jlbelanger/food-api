@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Weight;
 use DB;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +18,6 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Jlbelanger\Tapioca\Controllers\AuthorizedResourceController;
 use Jlbelanger\Tapioca\Exceptions\JsonApiException;
-use Jlbelanger\Tapioca\Exceptions\NotFoundException;
 use Jlbelanger\Tapioca\Exceptions\ValidationException;
 use Jlbelanger\Tapioca\Helpers\Utilities;
 use Validator;
@@ -36,7 +36,7 @@ class UserController extends AuthorizedResourceController
 			throw JsonApiException::generate([['title' => 'You do not have permission to update this record.', 'status' => '403']], 403);
 		}
 		if (!$user || !Auth::guard('sanctum')->user()->can('update', $user)) {
-			throw NotFoundException::generate();
+			abort(404);
 		}
 
 		$data = $request->input('data');
@@ -64,6 +64,9 @@ class UserController extends AuthorizedResourceController
 		}
 
 		$user->email = $data['attributes']['email'];
+		if ($user instanceof MustVerifyEmail && !$user->email_verified_at) {
+			$user->email_verified_at = null;
+		}
 		$user->save();
 
 		return response()->json(null, 204);
@@ -81,14 +84,13 @@ class UserController extends AuthorizedResourceController
 			throw JsonApiException::generate([['title' => 'You do not have permission to update this record.', 'status' => '403']], 403);
 		}
 		if (!$user || !Auth::guard('sanctum')->user()->can('update', $user)) {
-			throw NotFoundException::generate();
+			abort(404);
 		}
 
 		$data = $request->input('data');
 		$rules = [
 			'attributes.password' => ['required'],
 			'attributes.new_password' => ['required', 'confirmed', Rules\Password::defaults()],
-			'attributes.new_password_confirmation' => ['required'],
 		];
 		$validator = Validator::make($data, $rules, [], Utilities::prettyAttributeNames($rules));
 		if ($validator->fails()) {
@@ -111,8 +113,8 @@ class UserController extends AuthorizedResourceController
 
 		$user->forceFill([
 			'password' => Hash::make($data['attributes']['new_password']),
+			'remember_token' => Str::random(60),
 		])->save();
-		$user->setRememberToken(Str::random(60));
 		event(new PasswordReset($user));
 
 		return response()->json(null, 204);

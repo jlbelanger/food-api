@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Food;
+use Illuminate\Support\Carbon;
 
 class FoodObserver
 {
@@ -75,7 +76,7 @@ class FoodObserver
 		}
 
 		// Rename slug to allow new rows to be created with same slug.
-		$food->slug = 'deleted-' . strtotime('now') . '-' . $food->slug;
+		$food->slug = 'deleted-' . Carbon::now() . '-' . $food->slug;
 		$food->front_image = null;
 		$food->info_image = null;
 		$food->save();
