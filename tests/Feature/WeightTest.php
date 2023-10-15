@@ -106,7 +106,7 @@ class WeightTest extends TestCase
 	 */
 	public function testShow(array $args) : void
 	{
-		$args['response'] = $this->replaceToken('%id%', $this->weight->id, $args['response']);
+		$args['response'] = $this->replaceToken('%id%', (string) $this->weight->id, $args['response']);
 		$response = $this->actingAs($this->user)->json('GET', $this->path . '/' . $this->{$args['key']}->id);
 		$response->assertExactJson($args['response']);
 		$response->assertStatus($args['code']);
@@ -147,8 +147,8 @@ class WeightTest extends TestCase
 	 */
 	public function testUpdate(array $args) : void
 	{
-		$args['body'] = $this->replaceToken('%id%', $this->weight->id, $args['body']);
-		$args['response'] = $this->replaceToken('%id%', $this->weight->id, $args['response']);
+		$args['body'] = $this->replaceToken('%id%', (string) $this->weight->id, $args['body']);
+		$args['response'] = $this->replaceToken('%id%', (string) $this->weight->id, $args['response']);
 		$response = $this->actingAs($this->user)->json('PUT', $this->path . '/' . $this->{$args['key']}->id, $args['body']);
 		$response->assertExactJson($args['response']);
 		$response->assertStatus($args['code']);
