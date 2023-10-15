@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Validation\Rule;
 use Jlbelanger\Tapioca\Traits\Resource;
 
 class Trackable extends Model
@@ -30,25 +29,14 @@ class Trackable extends Model
 	public $timestamps = false;
 
 	/**
-	 * @param  array  $data
-	 * @param  string $method
 	 * @return array
 	 */
-	protected function rules(array $data, string $method) : array // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundInExtendedClassBeforeLastUsed
+	public function rules() : array
 	{
-		$required = $method === 'POST' ? 'required' : 'filled';
-		$rules = [
-			'attributes.name' => [$required, 'max:255'],
-			'attributes.slug' => [$required, 'max:255'],
-			'attributes.units' => ['max:2'],
+		return [
+			'data.attributes.name' => [$this->requiredOnCreate(), 'max:255'],
+			'data.attributes.slug' => [$this->requiredOnCreate(), 'max:255', $this->unique('slug')],
+			'data.attributes.units' => ['max:2'],
 		];
-
-		$unique = Rule::unique($this->getTable(), 'slug');
-		if ($this->id) {
-			$unique->ignore($this->id);
-		}
-		$rules['attributes.slug'][] = $unique;
-
-		return $rules;
 	}
 }

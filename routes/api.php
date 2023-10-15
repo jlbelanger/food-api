@@ -18,11 +18,15 @@ Route::group(['middleware' => ['api', 'guest', 'throttle:' . config('auth.thrott
 
 Route::group(['middleware' => ['api', 'auth:sanctum']], function () {
 	Route::delete('/auth/logout', [\App\Http\Controllers\AuthController::class, 'logout']);
+	Route::put('/auth/change-email', [\App\Http\Controllers\AuthController::class, 'changeEmail']);
+	Route::put('/auth/change-password', [\App\Http\Controllers\AuthController::class, 'changePassword']);
+
 	Route::get('/date', [\App\Http\Controllers\DateController::class, 'show']);
+
 	Route::post('/food/{id}/favourite', [\App\Http\Controllers\FoodController::class, 'favourite']);
+
 	Route::post('/meals/{id}/add', [\App\Http\Controllers\MealController::class, 'add']);
-	Route::put('/users/{id}/change-email', [\App\Http\Controllers\UserController::class, 'changeEmail']);
-	Route::put('/users/{id}/change-password', [\App\Http\Controllers\UserController::class, 'changePassword']);
+
 	Route::post('/users/delete-data', [\App\Http\Controllers\UserController::class, 'deleteData']);
 
 	Route::get('/calendar/{year}', function ($year) {

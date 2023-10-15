@@ -230,67 +230,58 @@ class Food extends Model
 	}
 
 	/**
-	 * @param  array  $data
-	 * @param  string $method
 	 * @return array
 	 */
-	protected function rules(array $data, string $method) : array // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundInExtendedClassBeforeLastUsed
+	public function rules() : array
 	{
-		$required = $method === 'POST' ? 'required' : 'filled';
 		$rules = [
-			'attributes.name' => [$required, 'max:255'],
-			'attributes.slug' => [$required, 'max:255'],
-			'attributes.serving_size' => [$required, 'regex:/(\d+ )?\d+(\/\d+|\.\d+)?/'],
-			'attributes.calories' => ['nullable', 'integer'],
-			'attributes.fat' => ['nullable', 'numeric'],
-			'attributes.saturated_fat' => ['nullable', 'numeric'],
-			'attributes.trans_fat' => ['nullable', 'numeric'],
-			'attributes.polyunsaturated_fat' => ['nullable', 'numeric'],
-			'attributes.omega_6' => ['nullable', 'numeric'],
-			'attributes.omega_3' => ['nullable', 'numeric'],
-			'attributes.monounsaturated_fat' => ['nullable', 'numeric'],
-			'attributes.cholesterol' => ['nullable', 'numeric'],
-			'attributes.sodium' => ['nullable', 'numeric'],
-			'attributes.potassium' => ['nullable', 'numeric'],
-			'attributes.carbohydrate' => ['nullable', 'numeric'],
-			'attributes.fibre' => ['nullable', 'numeric'],
-			'attributes.sugars' => ['nullable', 'numeric'],
-			'attributes.protein' => ['nullable', 'numeric'],
-			'attributes.vitamin_a' => ['nullable', 'integer'],
-			'attributes.vitamin_c' => ['nullable', 'integer'],
-			'attributes.calcium' => ['nullable', 'integer'],
-			'attributes.iron' => ['nullable', 'integer'],
-			'attributes.vitamin_d' => ['nullable', 'integer'],
-			'attributes.vitamin_e' => ['nullable', 'integer'],
-			'attributes.vitamin_k' => ['nullable', 'integer'],
-			'attributes.thiamin' => ['nullable', 'integer'],
-			'attributes.riboflavin' => ['nullable', 'integer'],
-			'attributes.niacin' => ['nullable', 'integer'],
-			'attributes.vitamin_b6' => ['nullable', 'integer'],
-			'attributes.folate' => ['nullable', 'integer'],
-			'attributes.vitamin_b12' => ['nullable', 'integer'],
-			'attributes.biotin' => ['nullable', 'integer'],
-			'attributes.pantothenate' => ['nullable', 'integer'],
-			'attributes.phosphorus' => ['nullable', 'integer'],
-			'attributes.iodine' => ['nullable', 'integer'],
-			'attributes.magnesium' => ['nullable', 'integer'],
-			'attributes.zinc' => ['nullable', 'integer'],
-			'attributes.selenium' => ['nullable', 'integer'],
-			'attributes.copper' => ['nullable', 'integer'],
-			'attributes.manganese' => ['nullable', 'integer'],
-			'attributes.chromium' => ['nullable', 'integer'],
-			'attributes.molybdenum' => ['nullable', 'integer'],
-			'attributes.chloride' => ['nullable', 'integer'],
+			'data.attributes.name' => [$this->requiredOnCreate(), 'max:255'],
+			'data.attributes.slug' => [$this->requiredOnCreate(), 'max:255', $this->unique('slug')],
+			'data.attributes.serving_size' => [$this->requiredOnCreate(), 'regex:/(\d+ )?\d+(\/\d+|\.\d+)?/'],
+			'data.attributes.calories' => ['nullable', 'integer'],
+			'data.attributes.fat' => ['nullable', 'numeric'],
+			'data.attributes.saturated_fat' => ['nullable', 'numeric'],
+			'data.attributes.trans_fat' => ['nullable', 'numeric'],
+			'data.attributes.polyunsaturated_fat' => ['nullable', 'numeric'],
+			'data.attributes.omega_6' => ['nullable', 'numeric'],
+			'data.attributes.omega_3' => ['nullable', 'numeric'],
+			'data.attributes.monounsaturated_fat' => ['nullable', 'numeric'],
+			'data.attributes.cholesterol' => ['nullable', 'numeric'],
+			'data.attributes.sodium' => ['nullable', 'numeric'],
+			'data.attributes.potassium' => ['nullable', 'numeric'],
+			'data.attributes.carbohydrate' => ['nullable', 'numeric'],
+			'data.attributes.fibre' => ['nullable', 'numeric'],
+			'data.attributes.sugars' => ['nullable', 'numeric'],
+			'data.attributes.protein' => ['nullable', 'numeric'],
+			'data.attributes.vitamin_a' => ['nullable', 'integer'],
+			'data.attributes.vitamin_c' => ['nullable', 'integer'],
+			'data.attributes.calcium' => ['nullable', 'integer'],
+			'data.attributes.iron' => ['nullable', 'integer'],
+			'data.attributes.vitamin_d' => ['nullable', 'integer'],
+			'data.attributes.vitamin_e' => ['nullable', 'integer'],
+			'data.attributes.vitamin_k' => ['nullable', 'integer'],
+			'data.attributes.thiamin' => ['nullable', 'integer'],
+			'data.attributes.riboflavin' => ['nullable', 'integer'],
+			'data.attributes.niacin' => ['nullable', 'integer'],
+			'data.attributes.vitamin_b6' => ['nullable', 'integer'],
+			'data.attributes.folate' => ['nullable', 'integer'],
+			'data.attributes.vitamin_b12' => ['nullable', 'integer'],
+			'data.attributes.biotin' => ['nullable', 'integer'],
+			'data.attributes.pantothenate' => ['nullable', 'integer'],
+			'data.attributes.phosphorus' => ['nullable', 'integer'],
+			'data.attributes.iodine' => ['nullable', 'integer'],
+			'data.attributes.magnesium' => ['nullable', 'integer'],
+			'data.attributes.zinc' => ['nullable', 'integer'],
+			'data.attributes.selenium' => ['nullable', 'integer'],
+			'data.attributes.copper' => ['nullable', 'integer'],
+			'data.attributes.manganese' => ['nullable', 'integer'],
+			'data.attributes.chromium' => ['nullable', 'integer'],
+			'data.attributes.molybdenum' => ['nullable', 'integer'],
+			'data.attributes.chloride' => ['nullable', 'integer'],
 		];
 
-		$unique = Rule::unique($this->getTable(), 'slug');
-		if ($this->id) {
-			$unique->ignore($this->id);
-		}
-		$rules['attributes.slug'][] = $unique;
-
 		if (!Auth::guard('sanctum')->user()->is_admin) {
-			$rules['relationships.user'] = ['prohibited'];
+			$rules['data.relationships.user'] = ['prohibited'];
 		}
 
 		return $rules;

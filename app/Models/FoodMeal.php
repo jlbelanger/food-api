@@ -46,27 +46,24 @@ class FoodMeal extends Model
 	}
 
 	/**
-	 * @param  array  $data
-	 * @param  string $method
 	 * @return array
 	 */
-	protected function rules(array $data, string $method) : array // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundInExtendedClassBeforeLastUsed
+	public function rules() : array
 	{
-		$required = $method === 'POST' ? 'required' : 'filled';
 		$rules = [
-			'attributes.food_id' => [$required],
-			'attributes.meal_id' => [$required],
-			'attributes.user_serving_size' => [$required, 'numeric'],
+			'data.relationships.food' => [$this->requiredOnCreate()],
+			'data.relationships.meal' => [$this->requiredOnCreate()],
+			'data.attributes.user_serving_size' => [$this->requiredOnCreate(), 'numeric'],
 		];
 
-		$mealId = !empty($data['attributes']['meal_id']) ? $data['attributes']['meal_id'] : $this->meal_id;
+		$mealId = request('data.relationships.meal.data.id', $this->meal_id);
 		$unique = Rule::unique($this->getTable(), 'food_id')->where(function ($query) use ($mealId) {
 			return $query->where('meal_id', '=', $mealId);
 		});
 		if ($this->id) {
 			$unique->ignore($this->id);
 		}
-		$rules['attributes.food_id'][] = $unique;
+		$rules['data.relationships.food'][] = $unique;
 
 		return $rules;
 	}

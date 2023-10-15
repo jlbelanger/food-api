@@ -59,19 +59,16 @@ class Weight extends Model
 	}
 
 	/**
-	 * @param  array  $data
-	 * @param  string $method
 	 * @return array
 	 */
-	protected function rules(array $data, string $method) : array // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundInExtendedClassBeforeLastUsed
+	public function rules() : array
 	{
-		$required = $method === 'POST' ? 'required' : 'filled';
 		$rules = [
-			'attributes.weight' => [$required, 'numeric'],
-			'attributes.date' => [$required, 'date'],
+			'data.attributes.weight' => [$this->requiredOnCreate(), 'numeric'],
+			'data.attributes.date' => [$this->requiredOnCreate(), 'date'],
 		];
 
-		$userId = !empty($data['attributes']['user_id']) ? $data['attributes']['user_id'] : $this->user_id;
+		$userId = request()->input('data.relationships.user.data.id', $this->user_id);
 		if (empty($userId)) {
 			$userId = Auth::guard('sanctum')->id();
 		}
@@ -81,7 +78,7 @@ class Weight extends Model
 		if ($this->id) {
 			$unique->ignore($this->id);
 		}
-		$rules['attributes.date'][] = $unique;
+		$rules['data.attributes.date'][] = $unique;
 
 		return $rules;
 	}

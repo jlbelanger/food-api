@@ -77,16 +77,13 @@ class Meal extends Model
 	}
 
 	/**
-	 * @param  array  $data
-	 * @param  string $method
 	 * @return array
 	 */
-	protected function rules(array $data, string $method) : array // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundInExtendedClassBeforeLastUsed
+	public function rules() : array
 	{
-		$required = $method === 'POST' ? 'required' : 'filled';
 		return [
-			'attributes.name' => [$required, 'max:255'],
-			'attributes.is_favourite' => ['boolean'],
+			'data.attributes.name' => [$this->requiredOnCreate(), 'max:255'],
+			'data.attributes.is_favourite' => ['boolean'],
 		];
 	}
 

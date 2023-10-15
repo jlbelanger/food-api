@@ -72,16 +72,13 @@ class Entry extends Model
 	}
 
 	/**
-	 * @param  array  $data
-	 * @param  string $method
 	 * @return array
 	 */
-	protected function rules(array $data, string $method) : array // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundInExtendedClassBeforeLastUsed
+	public function rules() : array
 	{
-		$required = $method === 'POST' ? 'required' : 'filled';
 		return [
-			'relationships.food' => [$required],
-			'attributes.date' => [$required, 'date'],
+			'data.relationships.food' => [$this->requiredOnCreate()],
+			'data.attributes.date' => [$this->requiredOnCreate(), 'date'],
 		];
 	}
 
