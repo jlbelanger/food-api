@@ -61,6 +61,73 @@ class AuthLoginTest extends TestCase
 				],
 				'code' => 422,
 			]],
+			'with non-string username' => [[
+				'body' => [
+					'data' => [
+						'attributes' => [
+							'username' => 1,
+							'password' => 'password',
+						],
+					],
+				],
+				'response' => [
+					'errors' => [
+						[
+							'title' => 'The username must be a string.',
+							'status' => '422',
+							'source' => [
+								'pointer' => '/data/attributes/username',
+							],
+						],
+					],
+				],
+				'code' => 422,
+			]],
+			'with non-string password' => [[
+				'body' => [
+					'data' => [
+						'attributes' => [
+							'username' => 'foo',
+							'password' => 1,
+						],
+					],
+				],
+				'response' => [
+					'errors' => [
+						[
+							'title' => 'The password must be a string.',
+							'status' => '422',
+							'source' => [
+								'pointer' => '/data/attributes/password',
+							],
+						],
+					],
+				],
+				'code' => 422,
+			]],
+			'with non-boolean remember' => [[
+				'body' => [
+					'data' => [
+						'attributes' => [
+							'username' => 'foo',
+							'password' => 'password',
+							'remember' => 'bar',
+						],
+					],
+				],
+				'response' => [
+					'errors' => [
+						[
+							'title' => 'The remember field must be true or false.',
+							'status' => '422',
+							'source' => [
+								'pointer' => '/data/attributes/remember',
+							],
+						],
+					],
+				],
+				'code' => 422,
+			]],
 			'with invalid username' => [[
 				'body' => [
 					'data' => [
@@ -115,6 +182,28 @@ class AuthLoginTest extends TestCase
 						'is_admin' => false,
 						'measurement_units' => null,
 						'remember' => false,
+						'trackables' => [],
+					],
+				],
+				'code' => 200,
+			]],
+			'with remember' => [[
+				'body' => [
+					'data' => [
+						'attributes' => [
+							'username' => 'foo',
+							'password' => 'password',
+							'remember' => true,
+						],
+					],
+				],
+				'response' => [
+					'token' => '%token%',
+					'user' => [
+						'id' => '%id%',
+						'is_admin' => false,
+						'measurement_units' => null,
+						'remember' => true,
 						'trackables' => [],
 					],
 				],
