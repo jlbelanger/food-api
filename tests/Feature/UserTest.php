@@ -47,7 +47,7 @@ class UserTest extends TestCase
 		$response->assertStatus(404);
 	}
 
-	public function showProvider() : array
+	public static function showProvider() : array
 	{
 		return [
 			'with another user' => [[
@@ -99,7 +99,7 @@ class UserTest extends TestCase
 		$response->assertStatus($args['code']);
 	}
 
-	public function updateProvider() : array
+	public static function updateProvider() : array
 	{
 		return [
 			'with another user' => [[
@@ -311,7 +311,7 @@ class UserTest extends TestCase
 		$response->assertStatus($args['code']);
 	}
 
-	public function destroyProvider() : array
+	public static function destroyProvider() : array
 	{
 		return [
 			'with another user' => [[

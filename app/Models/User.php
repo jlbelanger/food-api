@@ -53,7 +53,7 @@ class User extends Authenticatable implements MustVerifyEmail
 	];
 
 	/**
-	 * The attributes that should be cast to native types.
+	 * The attributes that should be cast.
 	 *
 	 * @var array<string, string>
 	 */

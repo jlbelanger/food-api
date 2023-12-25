@@ -28,7 +28,7 @@ class Entry extends Model
 	];
 
 	/**
-	 * The attributes that should be cast to native types.
+	 * The attributes that should be cast.
 	 *
 	 * @var array<string, string>
 	 */
