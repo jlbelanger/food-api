@@ -112,7 +112,7 @@ class User extends Authenticatable implements MustVerifyEmail
 	public function getAuthInfo(bool $remember) : array
 	{
 		return [
-			'id' => $this->id,
+			'id' => $this->getKey(),
 			'is_admin' => $this->is_admin,
 			'measurement_units' => $this->measurement_units,
 			'remember' => $remember,
