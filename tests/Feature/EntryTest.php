@@ -13,6 +13,16 @@ class EntryTest extends TestCase
 
 	protected $path = '/entries';
 
+	protected $user;
+
+	protected $otherUser;
+
+	protected $food;
+
+	protected $entry;
+
+	protected $otherEntry;
+
 	protected function setUp() : void
 	{
 		parent::setUp();

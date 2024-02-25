@@ -13,6 +13,14 @@ class ExtraTest extends TestCase
 
 	protected $path = '/extras';
 
+	protected $user;
+
+	protected $otherUser;
+
+	protected $extra;
+
+	protected $otherExtra;
+
 	protected function setUp() : void
 	{
 		parent::setUp();

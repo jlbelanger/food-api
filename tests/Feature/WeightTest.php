@@ -13,6 +13,14 @@ class WeightTest extends TestCase
 
 	protected $path = '/weights';
 
+	protected $user;
+
+	protected $otherUser;
+
+	protected $weight;
+
+	protected $otherWeight;
+
 	protected function setUp() : void
 	{
 		parent::setUp();

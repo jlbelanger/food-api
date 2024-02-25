@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Food;
+use App\Models\FoodMeal;
 use App\Models\Meal;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -13,12 +15,26 @@ class MealTest extends TestCase
 
 	protected $path = '/meals';
 
+	protected $user;
+
+	protected $otherUser;
+
+	protected $food;
+
+	protected $meal;
+
+	protected $foodMeal;
+
+	protected $otherMeal;
+
 	protected function setUp() : void
 	{
 		parent::setUp();
 		$this->user = User::factory()->create();
 		$this->otherUser = User::factory()->create(['username' => 'bar', 'email' => 'bar@example.com']);
+		$this->food = Food::factory()->create();
 		$this->meal = Meal::factory()->create(['user_id' => $this->user->id]);
+		$this->foodMeal = FoodMeal::factory()->create(['food_id' => $this->food->id, 'meal_id' => $this->meal->id]);
 		$this->otherMeal = Meal::factory()->create(['user_id' => $this->otherUser->id]);
 	}
 
@@ -94,6 +110,88 @@ class MealTest extends TestCase
 							'name' => 'Breakfast',
 							'is_favourite' => false,
 						],
+						'relationships' => [
+							'foods' => [
+								'data' => [
+									[
+										'id' => '%food_meal_id%',
+										'type' => 'food-meal',
+									],
+								],
+							],
+						],
+					],
+					'included' => [
+						[
+							'id' => '%food_meal_id%',
+							'type' => 'food-meal',
+							'attributes' => [
+								'user_serving_size' => 1,
+							],
+							'relationships' => [
+								'food' => [
+									'data' => [
+										'id' => '%food_id%',
+										'type' => 'food',
+									],
+								],
+							],
+						],
+						[
+							'id' => '%food_id%',
+							'type' => 'food',
+							'attributes' => [
+								'name' => 'Apple',
+								'slug' => 'apple',
+								'serving_size' => 1.5,
+								'serving_units' => null,
+								'front_image' => null,
+								'info_image' => null,
+								'calories' => null,
+								'fat' => null,
+								'saturated_fat' => null,
+								'trans_fat' => null,
+								'polyunsaturated_fat' => null,
+								'omega_6' => null,
+								'omega_3' => null,
+								'monounsaturated_fat' => null,
+								'cholesterol' => null,
+								'sodium' => null,
+								'potassium' => null,
+								'carbohydrate' => null,
+								'fibre' => null,
+								'sugars' => null,
+								'protein' => null,
+								'vitamin_a' => null,
+								'vitamin_c' => null,
+								'calcium' => null,
+								'iron' => null,
+								'vitamin_d' => null,
+								'vitamin_e' => null,
+								'vitamin_k' => null,
+								'thiamin' => null,
+								'riboflavin' => null,
+								'niacin' => null,
+								'vitamin_b6' => null,
+								'folate' => null,
+								'vitamin_b12' => null,
+								'biotin' => null,
+								'pantothenate' => null,
+								'phosphorus' => null,
+								'iodine' => null,
+								'magnesium' => null,
+								'zinc' => null,
+								'selenium' => null,
+								'copper' => null,
+								'manganese' => null,
+								'chromium' => null,
+								'molybdenum' => null,
+								'chloride' => null,
+								'is_favourite' => false,
+								'is_verified' => true,
+								'deleteable' => false,
+							],
+						],
 					],
 				],
 				'code' => 200,
@@ -107,7 +205,9 @@ class MealTest extends TestCase
 	public function testShow(array $args) : void
 	{
 		$args['response'] = $this->replaceToken('%id%', (string) $this->meal->id, $args['response']);
-		$response = $this->actingAs($this->user)->json('GET', $this->path . '/' . $this->{$args['key']}->id);
+		$args['response'] = $this->replaceToken('%food_id%', (string) $this->food->id, $args['response']);
+		$args['response'] = $this->replaceToken('%food_meal_id%', (string) $this->foodMeal->id, $args['response']);
+		$response = $this->actingAs($this->user)->json('GET', $this->path . '/' . $this->{$args['key']}->id . '?include=foods,foods.food');
 		$response->assertExactJson($args['response']);
 		$response->assertStatus($args['code']);
 	}

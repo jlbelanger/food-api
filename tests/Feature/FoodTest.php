@@ -13,6 +13,14 @@ class FoodTest extends TestCase
 
 	protected $path = '/food';
 
+	protected $user;
+
+	protected $otherUser;
+
+	protected $food;
+
+	protected $otherFood;
+
 	protected function setUp() : void
 	{
 		parent::setUp();

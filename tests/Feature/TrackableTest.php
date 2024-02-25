@@ -13,6 +13,10 @@ class TrackableTest extends TestCase
 
 	protected $path = '/trackables';
 
+	protected $user;
+
+	protected $trackable;
+
 	protected function setUp() : void
 	{
 		parent::setUp();
