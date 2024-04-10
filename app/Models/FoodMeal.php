@@ -46,6 +46,14 @@ class FoodMeal extends Model
 	}
 
 	/**
+	 * @return BelongsTo
+	 */
+	public function meal() : BelongsTo
+	{
+		return $this->belongsTo(Meal::class);
+	}
+
+	/**
 	 * @return array
 	 */
 	public function rules() : array
