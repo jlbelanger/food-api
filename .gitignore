@@ -2,6 +2,7 @@
 .env
 .phpunit.result.cache
 *.log
+/bootstrap/cache/*.php
+/public/uploads
 /vendor
-public/uploads
 TODO.md

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Trackable;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class TrackableTest extends TestCase
@@ -73,9 +74,7 @@ class TrackableTest extends TestCase
 		];
 	}
 
-	/**
-	 * @dataProvider storeProvider
-	 */
+	#[DataProvider('storeProvider')]
 	public function testStore(array $args) : void
 	{
 		$response = $this->actingAs($this->user)->json('POST', $this->path, $args['body']);
@@ -107,9 +106,7 @@ class TrackableTest extends TestCase
 		];
 	}
 
-	/**
-	 * @dataProvider showProvider
-	 */
+	#[DataProvider('showProvider')]
 	public function testShow(array $args) : void
 	{
 		$args['response'] = $this->replaceToken('%id%', (string) $this->trackable->id, $args['response']);
@@ -150,9 +147,7 @@ class TrackableTest extends TestCase
 		];
 	}
 
-	/**
-	 * @dataProvider updateProvider
-	 */
+	#[DataProvider('updateProvider')]
 	public function testUpdate(array $args) : void
 	{
 		$args['body'] = $this->replaceToken('%id%', (string) $this->trackable->id, $args['body']);
@@ -173,9 +168,7 @@ class TrackableTest extends TestCase
 		];
 	}
 
-	/**
-	 * @dataProvider destroyProvider
-	 */
+	#[DataProvider('destroyProvider')]
 	public function testDestroy(array $args) : void
 	{
 		$response = $this->actingAs($this->user)->json('DELETE', $this->path . '/' . $this->{$args['key']}->id);

@@ -35,7 +35,7 @@ php artisan db:seed
 chown -R www-data:www-data storage
 
 # Create account with username "test" and password "password" (or reset existing account password to "password")
-php artisan reset-auth
+php artisan auth:reset-admin
 ```
 
 Then, setup the [Food Tracker app](https://github.com/jlbelanger/food-app).

@@ -125,7 +125,7 @@ class User extends Authenticatable implements MustVerifyEmail
 	 * @param  integer|null $year
 	 * @return array
 	 */
-	public function getDataByDate(Collection $trackables, int $year = null) : array
+	public function getDataByDate(Collection $trackables, ?int $year = null) : array
 	{
 		$select = ['entries.date'];
 		foreach ($trackables as $trackable) {
